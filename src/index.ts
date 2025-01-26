@@ -1,8 +1,8 @@
 // src/index.ts
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
-// const cors = require("cors");
-import cors from "cors";
+const cors = require("cors");
+// import cors from "cors";
 
 dotenv.config();
 
@@ -10,11 +10,11 @@ const app: Express = express();
 const port = process.env.PORT || 3000;
 
 let corsOptions = {
-  origin: ["http://localhost:4200", "http://192.168.10.215:4200"],
+  origin: ["http://localhost:4200", "http://192.168.10.215:4200","http://crm.damavandco.com:5003/"],
 };
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 
-app.use(cors()); //For All Cors
+// app.use(cors()); //For All Cors
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
@@ -49,7 +49,8 @@ app.post("/transcribe-io/:id", (req: Request, res: Response) => {
         .json()
         .then((data) => {
           console.log("Response data:", data);
-          res.json(data.filename);
+          // res.json(data.filename);
+          res.json(data.text);
         })
         .catch((err) => {
           console.log("err", err);
