@@ -7,19 +7,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const cors = require("cors");
+const https = require("https");
+const fs = require("fs");
 // import cors from "cors";
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
 let corsOptions = {
-    origin: ["http://localhost:4200", "http://192.168.10.215:4200", "http://crm.damavandco.com:5003/"],
+    origin: [
+        "http://localhost:4200",
+        "http://192.168.10.215:4200",
+        "http://crm.damavandco.com:5003",
+        "http://192.168.10.101:5003",
+    ],
 };
 app.use(cors(corsOptions));
 // app.use(cors()); //For All Cors
 app.get("/", (req, res) => {
     res.send("Express + TypeScript Server");
 });
-app.post("/transcribe-io/:id", (req, res) => {
+app.get("/transcribe-io/:id", (req, res) => {
     // res.json("HI");
     // return;
     const formData = new FormData();
@@ -58,6 +65,15 @@ app.post("/transcribe-io/:id", (req, res) => {
         console.error("Error:", error);
     });
 });
+//#region SSL Self Sign
+// const httpsOptions = {
+//   key: fs.readFileSync("./security/privateKey.key"),
+//   cert: fs.readFileSync("./security/certificate.crt"),
+// };
+// https.createServer(httpsOptions, app).listen(port, () => {
+//   console.log(`[server]: Server is running at https://localhost:${port}`);
+// });
+//#endregion
 app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);
 });

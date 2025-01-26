@@ -2,6 +2,8 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 const cors = require("cors");
+const https = require("https");
+const fs = require("fs");
 // import cors from "cors";
 
 dotenv.config();
@@ -10,7 +12,12 @@ const app: Express = express();
 const port = process.env.PORT || 3000;
 
 let corsOptions = {
-  origin: ["http://localhost:4200", "http://192.168.10.215:4200","http://crm.damavandco.com:5003/"],
+  origin: [
+    "http://localhost:4200",
+    "http://192.168.10.215:4200",
+    "http://crm.damavandco.com:5003",
+    "http://192.168.10.101:5003",
+  ],
 };
 app.use(cors(corsOptions));
 
@@ -20,7 +27,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
 });
 
-app.post("/transcribe-io/:id", (req: Request, res: Response) => {
+app.get("/transcribe-io/:id", (req: Request, res: Response) => {
   // res.json("HI");
   // return;
   const formData = new FormData();
@@ -61,6 +68,17 @@ app.post("/transcribe-io/:id", (req: Request, res: Response) => {
       console.error("Error:", error);
     });
 });
+
+//#region SSL Self Sign
+// const httpsOptions = {
+//   key: fs.readFileSync("./security/privateKey.key"),
+//   cert: fs.readFileSync("./security/certificate.crt"),
+// };
+
+// https.createServer(httpsOptions, app).listen(port, () => {
+//   console.log(`[server]: Server is running at https://localhost:${port}`);
+// });
+//#endregion
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
